@@ -17,12 +17,20 @@
 # limitations under the License.
 #
 
+include_recipe "drush::pear"
+
 # Drush PEAR channel requires >= 1.9.1 due to hosting
 # on GitHub, where PEAR repo uses CNAME record.
 
+# Initialize drush PEAR channel
+dc = php_pear_channel "pear.drush.org" do
+  action :discover
+end
+
 # Chef resources need unique names in case in run_list twice.
 php_pear "PEAR-drush" do
-  package_name "PEAR"
-  version "1.9.1"
+  package_name "drush"
+  channel dc.channel_name
+  #version "1.9.1"
   action :upgrade
 end

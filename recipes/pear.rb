@@ -19,18 +19,33 @@
 
 include_recipe "php"
 
+if node[:drush].key?(:debug) and node[:drush][:debug] > 0
+  require 'rubygems'
+  if Gem::Specification::find_all_by_name('awesome_print').any?
+    require 'awesome_print'
+    ap node[:drush]
+  end
+end
 # If drush version is a preferred state, get the latest version of that state
-case node['drush']['version']
-when 'stable', 'beta', 'devel'
-  require 'rexml/document'
-  require 'open-uri'
-  xml = REXML::Document.new(open(node['drush']['allreleases']))
-  xml.root.each_element('r') do |release|
-    if release.text('s') == node['drush']['version']
-      node.default['drush']['version'] = release.text('v')
+case node[:drush][:version]
+  when 'stable', 'beta', 'devel'
+    require 'rexml/document'
+    require 'open-uri'
+    xml = REXML::Document.new(open(node['drush']['allreleases']))
+    xml.root.each_element('r') do |release|
+      if release.text('s') == node['drush'][:version]
+        node.set[:drush][:version] = release.text('v')
+        break
+      end
+    end
+  when 'latest'
+    require 'rexml/document'
+    require 'open-uri'
+    xml = REXML::Document.new(open(node[:drush]['allreleases']))
+    xml.root.each_element('r') do |release|
+      node.set[:drush][:version] = release.text('v')
       break
     end
-  end
 end
 
 # Initialize drush PEAR channel
@@ -38,9 +53,16 @@ dc = php_pear_channel "pear.drush.org" do
   action :discover
 end
 
+if node[:drush].key?(:debug) and node[:drush][:debug] > 0
+  require 'rubygems'
+  if Gem::Specification::find_all_by_name('awesome_print').any?
+    require 'awesome_print'
+    ap node[:drush]
+  end
+end
 # Install drush
 php_pear "drush" do
-  version node['drush']['version']
+  #version node[:drush][:version]
   channel dc.channel_name
-  action :install
+  action [ :install ]
 end

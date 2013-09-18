@@ -26,7 +26,7 @@ default['drush']['install_dir'] = "/usr/share/php/drush"
 # When installing via PEAR, this is the preferred state (stable, beta, devel)
 # or a specific x.y.z pear version (eg. 4.5.0).  When installing via Git,
 # this is a commit/tag/branch reference (eg. 6e4c1e22f0b / 7.x-4.5 / 7.x-4.x)
-default['drush']['version'] = "stable"
+default['drush']['version'] = "latest"
 
 # URL of allreleases.xml for pear to install from preferred states
 default['drush']['allreleases'] = "http://pear.drush.org/rest/r/drush/allreleases.xml"
