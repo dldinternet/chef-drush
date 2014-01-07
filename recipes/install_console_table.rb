@@ -18,5 +18,5 @@
 #
 
 php_pear "Console_Table" do
-  action :install
+  action :upgrade
 end
